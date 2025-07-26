@@ -16,15 +16,33 @@ return new class extends Migration {
             $table->timestamps();
         });
 
+        Schema::create('licitador', function (Blueprint $table) {
+            $table->id();
+            $table->string('nome', 100)->unique();
+            $table->timestamps();
+        });
+
+        Schema::create('prioridade', function (Blueprint $table) {
+            $table->id();
+            $table->string('nome', 100)->unique();
+            $table->timestamps();
+        });
+
+        Schema::create('fase', function (Blueprint $table) {
+            $table->id();
+            $table->string('nome', 100)->unique();
+            $table->timestamps();
+        });
+
         Schema::create('licitacao', function (Blueprint $table) {
-            $table->bigIncrements('id_lic');
-            $table->tinyInteger('nu_fase');
+            $table->bigIncrements('id');
+            $table->foreignId('id_fase')->constrained('fase');
             $table->string('nu_edital', 80);
-            $table->foreignId('id_mod')->constrained('modalidade');
+            $table->foreignId('id_modalidade')->constrained('modalidade');
             $table->timestamp('data_abertura');
-            $table->string('nome_licitador', 255)->nullable();
+            $table->foreignId('id_licitador')->nullable()->constrained('licitador');
             $table->string('cnpj_licitador', 18)->nullable();
-            $table->tinyInteger('prioridade');
+            $table->foreignId('id_prioridade')->constrained('prioridade');
             $table->text('objeto');
             $table->timestamps();
             $table->softDeletes();
@@ -36,6 +54,10 @@ return new class extends Migration {
      */
     public function down(): void
     {
+        Schema::dropIfExists('modalidade');
+        Schema::dropIfExists('licitador');
+        Schema::dropIfExists('prioridade');
         Schema::dropIfExists('licitacao');
+        Schema::dropIfExists('fase');
     }
 };

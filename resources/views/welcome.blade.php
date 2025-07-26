@@ -1,17 +1,12 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-
-        <title>Licitações</title>
-
-    </head>
-    <body>
-
-        <h1>Gestão de Licitações</h1>
-
-        <p>Data Atual: {{ \Carbon\Carbon::now()->format('d/m/Y H:i:s') }} </p>
-
-    </body>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Gestor de Licitações</title>
+    <link rel="icon" href="{{ asset('img/licitacao.png') }}" type="image/png">
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+</head>
+<body>
+    <div id="app"></div>
+</body>
 </html>

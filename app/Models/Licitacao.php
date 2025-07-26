@@ -9,15 +9,34 @@ class Licitacao extends Model
 {
     use SoftDeletes;
     protected $table = 'licitacao';
-    protected $primaryKey = 'id_lic';
+    protected $primaryKey = 'id';
     protected $fillable = [
-        'nu_fase',
+        'id_fase',
         'nu_edital',
-        'id_mod',
+        'id_modalidade',
         'data_abertura',
-        'nome_licitador',
+        'id_licitador',
         'cnpj_licitador',
-        'prioridade',
+        'id_prioridade',
         'objeto',
     ];
+
+    public function modalidade()
+    {
+        return $this->belongsTo(Modalidade::class, 'id_modalidade')->select(['id', 'nome']);
+    }
+
+    public function licitador()
+    {
+        return $this->belongsTo(Licitador::class, 'id_licitador')->select(['id', 'nome']);
+    }
+
+    public function fase()
+    {
+        return $this->belongsTo(Fase::class, 'id_fase')->select(['id', 'nome']);
+    }
+    public function prioridade()
+    {
+        return $this->belongsTo(Prioridade::class, 'id_prioridade')->select(['id', 'nome']);
+    }
 }

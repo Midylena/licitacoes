@@ -15,15 +15,15 @@ class LicitacaoSeeder extends Seeder
     {
         $faker = \Faker\Factory::create('pt_BR');
 
-        foreach (range(1, 10) as $i) {
+        foreach (range(1, 50) as $i) {
             DB::table('licitacao')->insert([
-                'nu_fase' => $faker->randomElement([-1, 0, 1]),
+                'id_fase' => rand(1, 3),
                 'nu_edital' => strtoupper(Str::random(5)) . '/' . $faker->year(),
-                'id_mod' => rand(1, 5), // Certifique-se de ter modalidades com esses IDs
+                'id_modalidade' => rand(1, 5),
                 'data_abertura' => $faker->dateTimeBetween('now', '+30 days'),
-                'nome_licitador' => $faker->company(),
+                'id_licitador' => rand(1, 10),
                 'cnpj_licitador' => $faker->cnpj(),
-                'prioridade' => rand(1, 10),
+                'id_prioridade' => rand(1, 5),
                 'objeto' => $faker->sentence(12),
                 'created_at' => now(),
                 'updated_at' => now(),

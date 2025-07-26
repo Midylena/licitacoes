@@ -1,11 +1,443 @@
-@import 'tailwindcss';
+.licTitulo {
+  display: flex;
+  gap: 8px;
+  margin-top: 30px;
+  margin-bottom: 30px;
+  color: #6a993c;
+}
 
-@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
-@source '../../storage/framework/views/*.php';
-@source '../**/*.blade.php';
-@source '../**/*.js';
+/* ===== LICLIST ===== */
+.liclist-filtros {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
 
-@theme {
-    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
-        'Segoe UI Symbol', 'Noto Color Emoji';
+/* Input FILTRO */
+.liclist-filtros-input {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.liclist-filtros-input input {
+  width: 500px;
+  height: 40px;
+  box-sizing: border-box;
+  padding: 8px 16px;
+  border: 1px solid #86B34F;
+  border-radius: 4px;
+}
+
+.liclist-filtros-input input:focus {
+  outline-color: #478533;
+  outline-style: solid;
+}
+
+/* Input DATA */
+.liclist-data-input {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.liclist-data-input input {
+  width: 150px;
+  height: 40px;
+  box-sizing: border-box;
+  padding: 8px 16px;
+  border: 1px solid #86B34F;
+  border-radius: 4px;
+  color:#b0b1b2;
+}
+
+.liclist-data-input input:focus {
+  outline-color: #478533;
+  outline-style: solid;
+}
+
+/* Button FILTRAR */
+.liclist-filtros-button {
+  height: 35px;
+  padding: 8px 16px;
+  background-color: #86B34F;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: small;
+}
+
+.liclist-filtros-button:hover {
+  background-color: #6a993c;
+}
+
+/* Button FILTRO */
+.liclist-filtros-button-img {
+  width: 40px;
+  height: 40px;
+  background-color: transparent;
+  border: 1px solid #86B34F;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.liclist-filtros-button-img:hover {
+  background-color: #d3e6bc;
+}
+
+.liclist-filtros-button-img img {
+  width: 20px;
+  height: 20px;
+}
+
+/* Button NOVA LICITAÇÃO */
+.liclist-button {
+  height: 40px;
+  padding: 0 16px;
+  background-color: #86B34F;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: medium;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.liclist-button:hover {
+  background-color: #6a993c;
+}
+
+.liclist-button img {
+  width: 20px;
+  height: 20px;
+}
+
+/* TABLE */
+.liclist-table {
+  width: 100%;
+  border-collapse: collapse;
+  border: 1px solid #478533;
+  font-size: 14px;
+  table-layout: fixed;
+  z-index: 1;
+}
+
+.liclist-table th {
+  background-color: #86B34F;
+  color: black;
+  padding: 8px;
+  border: 1px solid #478533;
+  text-align: center;
+  word-wrap: break-word;
+  font-weight: bold;
+}
+
+.liclist-table td {
+  padding: 8px;
+  border: 1px solid #478533;
+  color: black;
+  word-wrap: break-word;
+  text-align: center;
+}
+
+.liclist-table tbody tr:nth-child(odd) {
+  background-color: #C7D7C9;
+}
+
+.liclist-table tbody tr:nth-child(even) {
+  background-color: #F2F2F2;
+}
+
+.liclist-table tbody tr:hover {
+  background-color: #d3e6bc;
+}
+/* BUTTON TABLE*/
+.liclist-table-button {
+  margin: 1px 1px;
+  padding: 2px 2px;
+  background-color: transparent;
+  border: 1px solid #86B34F;
+  border-radius: 4px;
+  color: #478533;
+  cursor: pointer;
+  font-size: 13px;
+}
+.liclist-table-button:hover {
+  background-color: #86B34F;
+  color: white;
+}
+
+/* PAGINATION */
+.liclist-pagination {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  justify-content: center;
+  padding: 12px 0;
+}
+
+.liclist-pagination button {
+  border: none;
+  background: none;
+  padding: 4px 8px;
+  font-weight: 500;
+  color: #333;
+  cursor: pointer;
+}
+
+.liclist-pagination button.ativo {
+  color: #008C45;
+  font-weight: bold;
+  border: 1px solid #008C45;
+  border-radius: 4px;
+}
+
+.liclist-pagination select {
+  border: 1px solid #008C45;
+  border-radius: 4px;
+  padding: 4px 6px;
+  color: #008C45;
+  font-weight: 500;
+  background-color: white;
+}
+
+
+/* ===== LICFORM ===== */
+.licform-form {
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 100px;
+  flex-wrap: wrap;
+}
+
+/* LABEL */
+.licform-form-label {
+  color: #86B34F;
+}
+
+/* INPUT */
+.licform-form-input {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.licform-form-input input {
+  width: 500px;
+  height: 40px;
+  box-sizing: border-box;
+  padding: 8px 16px;
+  border: 1px solid #86B34F;
+  border-radius: 4px;
+}
+
+.licform-form-input input:focus {
+  outline-color: #478533;
+  outline-style: solid;
+}
+
+.licform-form-erro {
+  color: red;
+  font-size: 0.85rem;
+  margin-top: 4px;
+}
+
+/* TEXTAREA */
+.licform-form-textarea {
+  display: flex;
+  align-items: center;
+  gap:90px;
+}
+
+.licform-form-textarea textarea {
+  width: 500px;
+  height: 200px;
+  box-sizing: border-box;
+  padding: 8px 16px;
+  border: 1px solid #86B34F;
+  border-radius: 4px;
+}
+.licform-form-textarea textarea:focus {
+  outline-color: #478533;
+  outline-style: solid;
+}
+
+/* SELECT */
+.licform-form-select select{
+  width: 500px;
+  height: 40px;
+  box-sizing: border-box;
+  padding: 8px 16px;
+  border: 1px solid #86B34F;
+  border-radius: 4px;
+}
+
+input::placeholder {
+  color: #b0b1b2;
+}
+
+textarea::placeholder {
+  color: #b0b1b2;
+}
+
+.licform-form-select option {
+  padding: 100px;
+  background-color: white;
+  border: 1px solid #86B34F;
+  color:#6a993c
+}
+
+.licform-form-select option:hover {
+  outline-color: #478533;
+  outline-style: solid;
+}
+
+/* BUTTON */
+.licform-buttons {
+  position: fixed;
+  bottom: 20px;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: space-between;
+  padding: 0 20px;
+  z-index: 1000;
+}
+
+.licform-buttons-button {
+  height: 50px;
+  width: 150px;
+  padding: 0 20px;
+  background-color: #86B34F;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: medium;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
+  margin-left: 15px;
+  margin-top: 50px;
+}
+
+.licform-buttons-button:hover {
+  background-color: #6a993c;
+}
+
+/* ===== LICCARD ===== */
+.liccard-form {
+  padding: 40px 30px;
+  font-family: sans-serif;
+  background-color: white;
+}
+
+/* ===== DUAS COLUNAS LADO A LADO ===== */
+.liccard-form-layout {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  margin-bottom: 60px;
+  margin-top: 100px;
+}
+
+/* CADA COLUNA */
+.liccard-form-coluna {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 48%;
+}
+
+/* ===== TÍTULO DE CADA CAMPO ===== */
+.liccard-form-label-title {
+  color: #86B34F;
+  font-size: 14px;
+  font-weight: bold;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+
+/* ===== VALOR DO CAMPO ===== */
+.liccard-form-label-response {
+  color: black;
+  font-size: 16px;
+  margin-bottom: 12px;
+}
+
+
+
+.licform-form-select {
+  width: 500px;
+}
+
+/* Alvo profundo para o componente multiselect */
+::v-deep(.multiselect) {
+  height: 40px;
+  border: 1px solid #86B34F !important;
+  border-radius: 4px;
+  padding: 4px 12px;
+  box-sizing: border-box;
+  font-size: 11px;
+  display: flex;
+  align-items: center;
+}
+
+.multiselect__tags {
+    border: 1px solid #86B34F !important;
+    border-radius: 4px !important;
+    font-size: 16px !important;
+    color: black;
+    padding-left: 14px !important;
+}
+
+
+::v-deep(.multiselect__single) {
+  color: #6a993c;
+}
+
+::v-deep(.multiselect__placeholder) {
+  color: gray !important;
+}
+
+::v-deep(.multiselect__option) {
+  padding: 8px 16px;
+  background-color: white;
+  color: #6a993c;
+  border-bottom: 1px solid #86B34F;
+}
+
+::v-deep(.multiselect__option--highlight) {
+  background-color: #eaf5dc;
+  color: #478533;
+}
+
+.filtro-periodo-popup {
+  position: absolute;
+  top: 60px;
+  left: 20px;
+  padding: 12px;
+  border: 1px solid #86B34F;
+  border-radius: 6px;
+  background-color: #f5f9f0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.filtro-periodo-popup input {
+  padding: 4px;
+  border: 1px solid #ccc;
 }

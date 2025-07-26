@@ -4,15 +4,15 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Modalidade extends Model
+class Licitador extends Model
 {
-    protected $table = 'modalidade';
+    protected $table = 'licitador';
     protected $fillable = [
         'nome',
     ];
 
     public function licitacoes()
     {
-        return $this->hasMany(Licitacao::class, 'id_modalidade');
+        return $this->hasMany(Licitacao::class, 'id_licitador');
     }
 }

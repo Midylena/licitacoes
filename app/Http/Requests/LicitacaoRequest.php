@@ -22,7 +22,7 @@ class LicitacaoRequest extends FormRequest
         throw new HttpResponseException(response()->json([
             'status' => false,
             'erros' => $validator->errors(),
-        ], ));
+        ], 422));
     }
 
     /**
@@ -34,22 +34,22 @@ class LicitacaoRequest extends FormRequest
     {
         $licitacaoId = $this->route('licitacao');
         return [
-            'nu_fase' => 'required',
+            'id_fase' => 'required',
             'nu_edital' => [
                 'required',
                 Rule::unique('licitacao')
-                    ->ignore($licitacaoId?->id_lic, 'id_lic')
+                    ->ignore($licitacaoId?->id, 'id')
                     ->where(
                         fn($query) => $query
                             ->where('cnpj_licitador', $this->input('cnpj_licitador'))
-                            ->where('id_mod', $this->input('id_mod'))
+                            ->where('id_modalidade', $this->input('id_modalidade'))
                     ),
             ],
-            'id_mod' => 'required',
+            'id_modalidade' => 'required',
             'data_abertura' => 'required|date',
-            'nome_licitador' => 'nullable|string',
+            'id_licitador' => 'nullable',
             'cnpj_licitador' => 'nullable|string|size:18',
-            'prioridade' => 'required|integer',
+            'id_prioridade' => 'required',
             'objeto' => 'required|string',
         ];
     }
@@ -57,14 +57,14 @@ class LicitacaoRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'nu_fase.required' => 'Campo Fase é obrigatório!',
+            'id_fase.required' => 'Campo Fase é obrigatório!',
             'nu_edital.required' => 'Campo Edital é obrigatório!',
             'nu_edital.unique' => 'Essa Licitação já foi Cadastrada!',
-            'id_mod.required' => 'Campo Modalidade é obrigatório!',
+            'id_modalidade.required' => 'Campo Modalidade é obrigatório!',
             'data_abertura.required' => 'Campo Data de Abertura é obrigatório!',
             'data_abertura.date' => 'A Data de Abertura precisa ser Valida!',
             'cnpj_licitador.size' => 'Campo CNPJ precisa ter :size caracteres!',
-            'prioridade.required' => 'Campo Prioridade é obrigatório!',
+            'id_prioridade.required' => 'Campo Prioridade é obrigatório!',
             'objeto.required' => 'Campo Objeto é obrigatório!',
         ];
     }
