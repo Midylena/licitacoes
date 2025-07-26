@@ -34,7 +34,7 @@ Sistema completo para gerenciamento de licitações públicas, desenvolvido com 
 ### 1. Clone o repositório
 
 '''bash
-git clone https://github.com/Midylena/licitacoes
+git clone https://github.com/Midylena/licitacoes.git
 cd licitacoes
 
 ### 2. Backend (Laravel)
