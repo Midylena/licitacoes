@@ -30,6 +30,7 @@ return new class extends Migration {
 
         Schema::create('fase', function (Blueprint $table) {
             $table->id();
+            $table->integer('status');
             $table->string('nome', 100)->unique();
             $table->timestamps();
         });

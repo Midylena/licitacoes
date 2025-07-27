@@ -63,14 +63,14 @@
 import { ref, onMounted } from 'vue'
 import axios from 'axios'
 import { useRouter, useRoute } from 'vue-router'
+import Swal from 'sweetalert2'
 
 const router = useRouter()
 const route = useRoute()
 const id = route.params.id
 
 const loading = ref(true)
-
-const licitacoes = ref('[]')
+const licitacoes = ref([])
 
 onMounted(() => {
   carregarLicitacao(id)
@@ -82,46 +82,56 @@ async function carregarLicitacao(id) {
     const licitacao = await axios.get(`/api/licitacoes/${id}`)
     licitacoes.value = licitacao.data
   } catch (error) {
-        if (error.response) {
-            const resposta = error.response.data
-
-            if (resposta.erros) {
-            const mensagens = Object.values(resposta.erros).flat()
-            alert('Erro ao atualizar:\n' + mensagens.join('\n'))
-            } else {
-            alert(resposta.message || 'Erro ao atualizar licitação.')
-            }
-
-            console.error('Erro ao atualizar licitação:', resposta)
-        } else {
-            console.error('Erro inesperado:', error)
-            alert('Erro inesperado ao atualizar licitação.')
-        }
-    } finally {
+    mostrarErro(error, 'carregar licitação')
+  } finally {
     loading.value = false
   }
 }
 
 function voltar() {
-    router.push(`/`)
+  router.push(`/`)
 }
 
 function editarLicitacao(id) {
-    router.push(`/form/${id}`)
+  router.push(`/form/${id}`)
 }
 
 function formatarData(dataString) {
   if (!dataString) return ''
-
-  if (dataString instanceof Date) {
-    return dataString.toLocaleDateString('pt-BR')
-  }
-
-  if (dataString.includes('/') && dataString.split('/').length === 3) {
-    return dataString
-  }
-
+  if (dataString instanceof Date) return dataString.toLocaleDateString('pt-BR')
+  if (dataString.includes('/') && dataString.split('/').length === 3) return dataString
   const data = new Date(dataString)
   return isNaN(data) ? 'Data inválida' : data.toLocaleDateString('pt-BR')
+}
+
+function mostrarErro(error, acao = 'executar ação') {
+  if (error.response) {
+    const resposta = error.response.data
+    if (resposta.erros) {
+      const mensagens = Object.values(resposta.erros).flat()
+      Swal.fire({
+        title: `Erro ao ${acao}`,
+        html: mensagens.join('<br>'),
+        icon: 'warning',
+        confirmButtonText: 'OK'
+      })
+    } else {
+      Swal.fire({
+        title: `Erro ao ${acao}`,
+        text: resposta.message || `Erro ao ${acao}.`,
+        icon: 'error',
+        confirmButtonText: 'OK'
+      })
+    }
+    console.error(`Erro ao ${acao}:`, resposta)
+  } else {
+    console.error(`Erro inesperado ao ${acao}:`, error)
+    Swal.fire({
+      title: 'Erro inesperado',
+      text: `Erro inesperado ao ${acao}.`,
+      icon: 'error',
+      confirmButtonText: 'OK'
+    })
+  }
 }
 </script>

@@ -88,7 +88,7 @@
 import { ref, onMounted, computed } from 'vue'
 import axios from 'axios'
 import { useRouter } from 'vue-router'
-
+import Swal from 'sweetalert2'
 
 const router = useRouter()
 
@@ -115,112 +115,73 @@ const paginasVisiveis = computed(() => {
 
   paginas.push(1)
 
-  if (atual > 3) {
-    paginas.push('...')
-  }
+  if (atual > 3) paginas.push('...')
 
   const inicio = Math.max(2, atual - 1)
   const fim = Math.min(total - 1, atual + 1)
 
   for (let i = inicio; i <= fim; i++) {
-    if (i !== 1 && i !== total) {
-      paginas.push(i)
-    }
+    if (i !== 1 && i !== total) paginas.push(i)
   }
 
-  if (atual < total - 2) {
-    paginas.push('...')
-  }
-
-  if (total > 1) {
-    paginas.push(total)
-  }
+  if (atual < total - 2) paginas.push('...')
+  if (total > 1) paginas.push(total)
 
   return paginas
 })
 
-onMounted(() => {
-  carregarLicitacoes()
-})
+onMounted(() => carregarLicitacoes())
 
 async function carregarLicitacoes(pagina = 1) {
   loading.value = true
   try {
-    const params = new URLSearchParams()
-    params.append('page', pagina)
-    params.append('perPage', itensPorPagina.value)
-
-    params.append('page', pagina)
+    const params = new URLSearchParams({
+      page: pagina,
+      perPage: itensPorPagina.value,
+    })
 
     if (campoOrdenacao.value) {
       params.append('ordenarPor', campoOrdenacao.value)
       params.append('ordem', ordemCrescente.value ? 'asc' : 'desc')
     }
 
-    if (filtroGlobal.value) {
-      params.append('filtro', filtroGlobal.value)
-    }
-
-    if (dataInicio.value) {
-      params.append('dataInicio', dataInicio.value)
-    }
-
-    if (dataFim.value) {
-      params.append('dataFim', dataFim.value)
-    }
+    if (filtroGlobal.value) params.append('filtro', filtroGlobal.value)
+    if (dataInicio.value) params.append('dataInicio', dataInicio.value)
+    if (dataFim.value) params.append('dataFim', dataFim.value)
 
     const response = await axios.get(`/api/licitacoes?${params.toString()}`)
     resposta.value = response.data.licitacoes
     licitacoes.value = resposta.value.data
   } catch (error) {
-        if (error.response) {
-            const resposta = error.response.data
-
-            if (resposta.erros) {
-            const mensagens = Object.values(resposta.erros).flat()
-            alert('Erro ao atualizar:\n' + mensagens.join('\n'))
-            } else {
-            alert(resposta.message || 'Erro ao atualizar licitação.')
-            }
-
-            console.error('Erro ao atualizar licitação:', resposta)
-        } else {
-            console.error('Erro inesperado:', error)
-            alert('Erro inesperado ao atualizar licitação.')
-        }
-    } finally {
+    mostrarErro(error, 'carregar licitações')
+  } finally {
     loading.value = false
   }
 }
 
 async function deletarLicitacao(id) {
-  if (!confirm('Tem certeza que deseja excluir esta licitação?')) return
+  const confirmacao = await Swal.fire({
+    title: 'Confirmação',
+    text: 'Tem certeza que deseja excluir esta licitação?',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonText: 'Sim, excluir',
+    cancelButtonText: 'Cancelar'
+  })
+
+  if (!confirmacao.isConfirmed) return
+
   try {
     const response = await axios.delete(`/api/licitacoes/${id}`)
-
     if (response.data.status) {
-      alert('Licitação deletada com sucesso!')
+      Swal.fire('Sucesso', 'Licitação deletada com sucesso!', 'success')
       carregarLicitacoes()
     } else {
-      alert('Não foi possível deletar a licitação.')
+      Swal.fire('Erro', 'Não foi possível deletar a licitação.', 'error')
     }
   } catch (error) {
-        if (error.response) {
-            const resposta = error.response.data
-
-            if (resposta.erros) {
-            const mensagens = Object.values(resposta.erros).flat()
-            alert('Erro ao atualizar:\n' + mensagens.join('\n'))
-            } else {
-            alert(resposta.message || 'Erro ao atualizar licitação.')
-            }
-
-            console.error('Erro ao atualizar licitação:', resposta)
-        } else {
-            console.error('Erro inesperado:', error)
-            alert('Erro inesperado ao atualizar licitação.')
-        }
-    } finally {
+    mostrarErro(error, 'deletar licitação')
+  } finally {
     loading.value = false
   }
 }
@@ -266,16 +227,40 @@ function proximaPagina() {
 
 function formatarData(dataString) {
   if (!dataString) return ''
-
-  if (dataString instanceof Date) {
-    return dataString.toLocaleDateString('pt-BR')
-  }
-
-  if (dataString.includes('/') && dataString.split('/').length === 3) {
-    return dataString
-  }
-
+  if (dataString instanceof Date) return dataString.toLocaleDateString('pt-BR')
+  if (dataString.includes('/') && dataString.split('/').length === 3) return dataString
   const data = new Date(dataString)
   return isNaN(data) ? 'Data inválida' : data.toLocaleDateString('pt-BR')
+}
+
+function mostrarErro(error, acao = 'executar ação') {
+  if (error.response) {
+    const resposta = error.response.data
+    if (resposta.erros) {
+      const mensagens = Object.values(resposta.erros).flat()
+      Swal.fire({
+        title: `Erro ao ${acao}`,
+        html: mensagens.join('<br>'),
+        icon: 'warning',
+        confirmButtonText: 'OK'
+      })
+    } else {
+      Swal.fire({
+        title: `Erro ao ${acao}`,
+        text: resposta.message || `Erro ao ${acao}.`,
+        icon: 'error',
+        confirmButtonText: 'OK'
+      })
+    }
+    console.error(`Erro ao ${acao}:`, resposta)
+  } else {
+    console.error(`Erro inesperado ao ${acao}:`, error)
+    Swal.fire({
+      title: 'Erro inesperado',
+      text: `Erro inesperado ao ${acao}.`,
+      icon: 'error',
+      confirmButtonText: 'OK'
+    })
+  }
 }
 </script>

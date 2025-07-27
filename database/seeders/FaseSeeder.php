@@ -15,14 +15,17 @@ class FaseSeeder extends Seeder
         DB::table('fase')->insert([
             [
                 'nome' => 'Em edição',
+                'status' => -1,
                 'created_at' => now()
             ],
             [
                 'nome' => 'Descartada / Cancelada',
+                'status' => 0,
                 'created_at' => now()
             ],
             [
-                'nome' => 'Publicada / Em andamento',
+                'nome' => 'Processada / Em andamento',
+                'status' => 1,
                 'created_at' => now()
             ],
         ]);

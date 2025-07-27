@@ -15,7 +15,7 @@ class LicitacaoSeeder extends Seeder
     {
         $faker = \Faker\Factory::create('pt_BR');
 
-        foreach (range(1, 50) as $i) {
+        foreach (range(1, 200) as $i) {
             DB::table('licitacao')->insert([
                 'id_fase' => rand(1, 3),
                 'nu_edital' => strtoupper(Str::random(5)) . '/' . $faker->year(),
