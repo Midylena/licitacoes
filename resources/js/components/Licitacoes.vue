@@ -187,7 +187,7 @@ import 'vue-multiselect/dist/vue-multiselect.min.css';
 import Swal from 'sweetalert2'
 
 const mostrarFiltroPeriodo = ref(false)
-const mostrarBotaoNovaLicitacao = ref(false)
+const mostrarBotaoNovaLicitacao = ref(true)
 const loading = ref(true)
 const loadingLicitacao = ref(true)
 const ordemCrescente = ref(true)
