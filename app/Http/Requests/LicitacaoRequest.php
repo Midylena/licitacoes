@@ -57,14 +57,14 @@ class LicitacaoRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'id_fase.required' => 'Campo Fase é obrigatório!',
             'nu_edital.required' => 'Campo Edital é obrigatório!',
             'nu_edital.unique' => 'Essa Licitação já foi Cadastrada!',
-            'id_modalidade.required' => 'Campo Modalidade é obrigatório!',
+            'cnpj_licitador.size' => 'Campo CNPJ precisa ter 14 caracteres!',
             'data_abertura.required' => 'Campo Data de Abertura é obrigatório!',
             'data_abertura.date' => 'A Data de Abertura precisa ser Valida!',
-            'cnpj_licitador.size' => 'Campo CNPJ precisa ter :size caracteres!',
+            'id_modalidade.required' => 'Campo Modalidade é obrigatório!',
             'id_prioridade.required' => 'Campo Prioridade é obrigatório!',
+            'id_fase.required' => 'Campo Fase é obrigatório!',
             'objeto.required' => 'Campo Objeto é obrigatório!',
         ];
     }

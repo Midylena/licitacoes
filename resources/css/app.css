@@ -51,7 +51,6 @@
   padding: 8px 16px;
   border: 1px solid #86B34F;
   border-radius: 4px;
-  color:#b0b1b2;
 }
 
 .liclist-data-input input:focus {
@@ -179,7 +178,13 @@
 
 /* PAGINATION */
 .liclist-pagination {
+  position: fixed;
+  bottom: 20px;
+  left: 0;
+  right: 0;
   display: flex;
+  padding: 0 20px;
+  z-index: 1000;
   align-items: center;
   gap: 8px;
   justify-content: center;
@@ -188,10 +193,12 @@
 
 .liclist-pagination button {
   border: none;
-  background: none;
+  background: white;
+  border: 1px solid #008C45;
   padding: 4px 8px;
   font-weight: 500;
-  color: #333;
+  color: #008C45;
+  border-radius: 4px;
   cursor: pointer;
 }
 
@@ -200,6 +207,7 @@
   font-weight: bold;
   border: 1px solid #008C45;
   border-radius: 4px;
+  background: #86B34F;
 }
 
 .liclist-pagination select {
@@ -209,6 +217,8 @@
   color: #008C45;
   font-weight: 500;
   background-color: white;
+  outline: none;
+  border-color: #008C45;
 }
 
 
@@ -244,12 +254,6 @@
 .licform-form-input input:focus {
   outline-color: #478533;
   outline-style: solid;
-}
-
-.licform-form-erro {
-  color: red;
-  font-size: 0.85rem;
-  margin-top: 4px;
 }
 
 /* TEXTAREA */
@@ -441,8 +445,6 @@
 
 
 
-
-
 /* ===== LICITACOES ===== */
 .licitacao-titulo {
   display: flex;
@@ -478,18 +480,23 @@
   box-sizing: border-box;
 }
 
+.licitacao-label-div {
+  color: #86B34F;
+  font-weight: 600;
+  padding: 12px;
+}
+
 /* LABEL TITULO*/
 .licitacao-label {
   color: #86B34F;
   font-weight: 600;
-  margin-top: 8px;
+  padding: 5px;
 }
 
 /* LABEL */
 .licitacao-sub-label {
   color: black;
   font-size: 1rem;
-  padding: 8px 15px;
 }
 
 @media (max-width: 768px) {
@@ -576,13 +583,6 @@
   outline: 2px solid #478533;
 }
 
-/* MENSAGEM DE ERRO */
-.licitacao-erro {
-  color: red;
-  font-size: 0.85rem;
-  margin-top: 4px;
-}
-
 /* TEXTAREA */
 .licitacao-textarea {
   display: flex;
@@ -596,17 +596,63 @@
 
 .licitacao-textarea textarea {
   width: 100%;
-  height: 185px;
+  height: 114px;
   padding: 0.5rem 1rem;
   border: 1px solid #86B34F;
   border-radius: 4px;
   font-size: 1rem;
-  resize: vertical;
+  resize: none;
   box-sizing: border-box;
 }
 
 .licitacao-textarea textarea:focus {
   outline: 2px solid #478533;
+}
+
+/* FILTRO E BOTÕES */
+.licitacao-meio {
+  display: flex;
+  justify-content: space-between; /* distribui extremos */
+  align-items: center;
+  flex-wrap: wrap; /* quebra em telas menores */
+  margin-bottom: 16px;
+  margin-top: 1px;
+  gap: 10px;
+}
+
+.licitacao-meio-input {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.licitacao-meio-form {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  color: #478533;
+  font-size: 14px;
+}
+.licitacao-meio-label {
+  font-weight: bold;
+  margin-left: 15px;
+  color: #478533;
+}
+.licitacao-meio-sub-label {
+  font-weight: normal;
+  gap: 1px;
+  margin-left: 2px;
+   color: black;
+}
+
+.licitacao-botton-form {
+  display: flex;
+  justify-content: space-between; /* distribui extremos */
+  align-items: center;
+  flex-wrap: wrap; /* quebra em telas menores */
+  margin-bottom: 16px;
+  margin-top: 1px;
+  gap: 10px;
 }
 
 /* BUTTON */
@@ -619,16 +665,79 @@
   border-radius: 4px;
   cursor: pointer;
   font-size: small;
-  margin-right: 10px;
+}
+
+.botao-desativado {
+  background-color: #ccc !important;
+  cursor: not-allowed;
+  color: #666;
+}
+
+.licitacao-botton-button {
+  height: 35px;
+  padding: 8px 16px;
+  background-color:#649dd5;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: small;
 }
 
 .licitacao-button:hover {
   background-color: #6a993c;
 }
 
+.licitacao-button img {
+  width: 20px;
+  height: 20px;
+}
+
+/* BUTTON FILTRO */
+.licitacao-button-filtro {
+  width: 40px;
+  height: 40px;
+  background-color: transparent;
+  border: 1px solid #86B34F;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.licitacao-button-filtro:hover {
+  background-color: #d3e6bc;
+}
+
+.licitacao-button-filtro img {
+  width: 20px;
+  height: 20px;
+}
+
+/* INPUT FILTRO DATA */
+.licitacao-input-filtro {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.licitacao-input-filtro input {
+  width: 150px;
+  height: 40px;
+  box-sizing: border-box;
+  padding: 8px 16px;
+  border: 1px solid #86B34F;
+  border-radius: 4px;
+}
+
+.licitacao-input-filtro input:focus {
+  outline-color: #478533;
+  outline-style: solid;
+}
+
 /* PAGINATION */
 .licitacao-pagination {
-  position: fixed;
   bottom: 20px;
   left: 0;
   right: 0;
@@ -671,39 +780,34 @@
   border-color: #008C45;
 }
 
-/* WRAPPER FLEXÍVEL */
-.licitacao-wrapper {
-  width: 100%;
-  overflow-x: auto;
-  box-sizing: border-box;
+.licitacao-label-paginate {
+  font-weight: bold;
+  color: #478533;
 }
 
-/* TABELA RESPONSIVA */
+.licitacao-wrapper,
+.licitacao-wrapper-full {
+  max-height: 500px;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.licitacao-wrapper-full {
+  max-height: 780px;
+}
+
+/* TABELA */
 .licitacao-table {
   width: 100%;
   border-collapse: collapse;
-  border: 1px solid #478533;
+  table-layout: fixed;
   font-size: 14px;
-  table-layout: auto;
-  z-index: 1;
   max-width: 100%;
-  overflow-x: auto;
   word-break: normal;
-  margin-bottom: 100px;
+  border: none;
 }
 
-/* CABEÇALHO */
-.licitacao-table th {
-  background-color: #86B34F;
-  color: black;
-  padding: 8px;
-  border: 1px solid #478533;
-  text-align: center;
-  font-weight: bold;
-  white-space: nowrap;
-}
-
-/* CELULAS */
+/* CÉLULAS */
 .licitacao-table td {
   padding: 8px;
   border: 1px solid #478533;
@@ -712,15 +816,42 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  box-sizing: border-box;
 }
 
+/* CABEÇALHO padrão (não fixo) */
+.licitacao-table thead th {
+  background-color: #86B34F;
+  color: black;
+  padding: 8px;
+  border: 1px solid #478533;
+  text-align: center;
+  font-weight: bold;
+  white-space: nowrap;
+  box-sizing: border-box;
+  position: static; /* não fixo por padrão */
+  z-index: 1;
+}
 /* ESTILO ZEBRADO */
 .licitacao-table tbody tr:nth-child(odd) {
-  background-color: #C7D7C9;
+  background-color: #C7D7C9 !important;
 }
 .licitacao-table tbody tr:nth-child(even) {
-  background-color: #F2F2F2;
+  background-color: #F2F2F2 !important;
 }
 .licitacao-table tbody tr:hover {
-  background-color: #d3e6bc;
+  background-color: #d3e6bc !important;
 }
+
+.licitacao-table tbody tr.linha-selecionada {
+  background-color: #b0dcae !important;
+}
+
+
+/* CABEÇALHO fixo apenas quando estiver no modo "full" */
+.licitacao-wrapper-full .licitacao-table thead th {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+}
+

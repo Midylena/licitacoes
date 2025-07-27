@@ -178,6 +178,8 @@ async function licitacao(id) {
   }
 }
 
+
+
 async function criarLicitacao() {
   const payload = montarPayload()
   await axios.post('/api/licitacoes', payload)
@@ -242,23 +244,37 @@ function mascaraEdital(e) {
 }
 
 function formatarDataIso(dataBR) {
-  const [dia, mes, ano] = dataBR.split('/')
-  return `${ano}-${mes.padStart(2, '0')}-${dia.padStart(2, '0')}`
+    if (data.value === '') {
+        return ''
+    }
+    else{
+        const [dia, mes, ano] = dataBR.split('/')
+        return `${ano}-${mes.padStart(2, '0')}-${dia.padStart(2, '0')}`
+    }
 }
 
 function validarData() {
   const partes = data.value.split('/')
-  if (partes.length !== 3) {
-    erroData.value = 'Formato inválido (use dd/mm/aaaa)'
-    return
-  }
-  const [dia, mes, ano] = partes.map(Number)
-  const dataObj = new Date(ano, mes - 1, dia)
-  const dataValida =
-    dataObj.getFullYear() === ano &&
-    dataObj.getMonth() === mes - 1 &&
-    dataObj.getDate() === dia
-  erroData.value = dataValida ? '' : 'Data inválida'
+  if (data.value === '') {
+    return true
+  } else {
+        if (partes.length !== 3) {
+            Swal.fire('Erro', 'Formato inválido (use dd/mm/aaaa)', 'error')
+        }
+        const [dia, mes, ano] = partes.map(Number)
+        const dataObj = new Date(ano, mes - 1, dia)
+        const dataValida =
+            dataObj.getFullYear() === ano &&
+            dataObj.getMonth() === mes - 1 &&
+            dataObj.getDate() === dia
+
+        if (!dataValida) {
+            Swal.fire('Erro', 'Data inválida', 'error')
+            return false
+        } else {
+            return true
+        }
+    }
 }
 
 function formatarData(dataString) {
@@ -270,35 +286,50 @@ function formatarData(dataString) {
 }
 
 function validarCNPJ() {
-  const cnpjLimpo = cnpj.value.replace(/[^\d]+/g, '')
-  if (cnpjLimpo.length !== 14 || /^(\d)\1+$/.test(cnpjLimpo)) {
-    erroCNPJ.value = 'CNPJ inválido'
-    return
+  const cnpjLimpo = cnpj.value.replace(/[^\d]+/g, '');
+
+  if (cnpjLimpo.length !== 14) {
+    return true;
   }
 
-  let tamanho = 12
-  let numeros = cnpjLimpo.substring(0, tamanho)
-  let digitos = cnpjLimpo.substring(tamanho)
-  let soma = 0
-  let pos = tamanho - 7
-  for (let i = tamanho; i >= 1; i--) {
-    soma += parseInt(numeros.charAt(tamanho - i)) * pos--
-    if (pos < 2) pos = 9
+  if (/^(\d)\1+$/.test(cnpjLimpo)) {
+    Swal.fire('Erro', 'CNPJ com todos os dígitos iguais é inválido.', 'error');
+    return false;
   }
-  let resultado = soma % 11 < 2 ? 0 : 11 - (soma % 11)
+
+  let tamanho = 12;
+  let numeros = cnpjLimpo.substring(0, tamanho);
+  let digitos = cnpjLimpo.substring(tamanho);
+  let soma = 0;
+  let pos = tamanho - 7;
+
+  for (let i = tamanho; i >= 1; i--) {
+    soma += parseInt(numeros.charAt(tamanho - i)) * pos--;
+    if (pos < 2) pos = 9;
+  }
+
+  let resultado = soma % 11 < 2 ? 0 : 11 - (soma % 11);
   if (resultado != parseInt(digitos.charAt(0))) {
-    erroCNPJ.value = 'CNPJ inválido'
-    return
+    Swal.fire('Erro', 'Dígito verificador 1 do CNPJ está incorreto.', 'error');
+    return false;
   }
-  tamanho = 13
-  numeros = cnpjLimpo.substring(0, tamanho)
-  soma = 0
-  pos = tamanho - 7
+
+  tamanho = 13;
+  numeros = cnpjLimpo.substring(0, tamanho);
+  soma = 0;
+  pos = tamanho - 7;
+
   for (let i = tamanho; i >= 1; i--) {
-    soma += parseInt(numeros.charAt(tamanho - i)) * pos--
-    if (pos < 2) pos = 9
+    soma += parseInt(numeros.charAt(tamanho - i)) * pos--;
+    if (pos < 2) pos = 9;
   }
-  resultado = soma % 11 < 2 ? 0 : 11 - (soma % 11)
-  erroCNPJ.value = resultado != parseInt(digitos.charAt(1)) ? 'CNPJ inválido' : ''
+
+  resultado = soma % 11 < 2 ? 0 : 11 - (soma % 11);
+  if (resultado != parseInt(digitos.charAt(1))) {
+    Swal.fire('Erro', 'Dígito verificador 2 do CNPJ está incorreto.', 'error');
+    return false;
+  }
+
+  return true;
 }
 </script>

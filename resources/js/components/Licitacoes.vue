@@ -4,7 +4,7 @@
             <h2 class="licitacao-titulo">GESTOR DE LICITAÇÕES PÚBLICAS</h2>
             <div v-if="loadingLicitacao">Carregando...</div>
             <div v-else>
-                <div class="licitacao-form">
+                <div v-if="!controleTable" class="licitacao-form">
                     <div class="licitacao-layout">
                         <div class="licitacao-coluna">
                             <label class="licitacao-label">Número do Edital</label>
@@ -27,12 +27,6 @@
                             <label class="licitacao-label">CNPJ Licitador</label>
                             <div class="licitacao-input">
                                 <input v-model="cnpj" v-mask="'##.###.###/####-##'" placeholder="00.000.000/0000-00" @blur="validarCNPJ"/>
-                                <span v-if="erroCNPJ" class="licitacao-erro">{{ erroCNPJ }}</span>
-                            </div>
-                            <label class="licitacao-label">Data de Abertura</label>
-                            <div class="licitacao-input">
-                                <input v-model="data" v-mask="'##/##/####'" placeholder="dd/mm/aaaa" @blur="validarData"/>
-                                <span v-if="erroData" class="licitacao-erro">{{ erroData }}</span>
                             </div>
                         </div>
                         <div class="licitacao-coluna">
@@ -72,67 +66,45 @@
                                     label="nome"
                                     track-by="id"/>
                             </div>
-                            <label class="licitacao-label">Data de Criação</label>
-                            <div class="licitacao-sub-label">
-                                <label>{{ created_at }}</label>
-                            </div>
                         </div>
                         <div class="licitacao-coluna">
+                            <label class="licitacao-label">Data de Abertura</label>
+                                <div class="licitacao-input">
+                                    <input v-model="data" v-mask="'##/##/####'" placeholder="dd/mm/aaaa" @blur="validarData"/>
+                                </div>
                             <label class="licitacao-label">Objeto</label>
                             <div class="licitacao-textarea">
                                 <textarea v-model="objeto" placeholder="Descreva a Licitação" type="text" />
                             </div>
-                            <label class="licitacao-label">Data de Atualização</label>
-                            <div class="licitacao-sub-label">
-                                <label>{{ updated_at }}</label>
-                            </div>
                         </div>
                     </div>
-                    <div>
-                        <button class="licitacao-button" @click="deletarLicitacao(id)">DELETAR</button>
-                        <button class="licitacao-button"
-                            @click="modificarLicitacao(id)">
-                            {{ id === 0 ? 'CRIAR LICITAÇÃO' : 'ATUALIZAR LICITAÇÃO'}}
-                        </button>
+                    <div class="licitacao-meio">
+                        <div class="licitacao-meio-input">
+                            <button class="licitacao-button"
+                            @click="modificarLicitacao(), controleButton = true">{{ id === 0 ? 'CRIAR LICITAÇÃO' : 'NOVA LICITAÇÃO'}}
+                            <img src="/public/img/novaLicitacao.svg" alt="Adicionar"/>
+                            </button>
+                            <button class="licitacao-button" :disabled="controleButton" :class="{ 'botao-desativado': controleButton }" @click="atualizarLicitacao(id)">
+                            ATUALIZAR LICITAÇÃO
+                            </button>
+                            <button class="licitacao-button" :style="{ color: '#e13030' }" :disabled="controleButton" :class="{ 'botao-desativado': controleButton }"
+                            @click="deletarLicitacao(id)">DELETAR</button>
+                        </div>
+                        <div class="licitacao-meio-form">
+                            <span class="licitacao-meio-label">Criação:</span>
+                            <span class="licitacao-meio-sub-label">{{ created_at }}</span>
+                            <span class="licitacao-meio-label">Atualização:</span>
+                            <span class="licitacao-meio-sub-label">{{ updated_at }}</span>
+                        </div>
                     </div>
                 </div>
             </div>
 
             <hr>
 
-            <div class="liclist-filtros">
-                <div class="liclist-filtros-input">
-                    <input v-model="filtroGlobal" type="text" placeholder="Filtro" />
-                    <button v-if="!mostrarFiltroPeriodo" @click="aplicarTodosOsFiltros" class="liclist-filtros-button">
-                        FILTRAR
-                    </button>
-                    <button class="liclist-filtros-button-img" @click="mostrarFiltroPeriodo = !mostrarFiltroPeriodo">
-                        <img src="/public/img/filtro.svg" alt="Filtrar"/>
-                    </button>
-                    <div v-if="mostrarFiltroPeriodo" class="liclist-data-input">
-                        <label>
-                            Início:
-                            <input type="date" v-model="dataInicio" :style="{ color: dataInicio ? '#000' : '#b0b1b2' }">
-                        </label>
-                        <label>
-                            Fim:
-                            <input type="date" v-model="dataFim" :style="{ color: dataFim ? '#000' : '#b0b1b2' }">
-                        </label>
-                        <button class="liclist-filtros-button" @click="aplicarTodosOsFiltros">
-                            FILTRAR
-                        </button>
-                    </div>
-
-                </div>
-                <button v-if="!mostrarBotaoNovaLicitacao" class="liclist-button" @click="carregarNovaLicitacao(), mostrarBotaoNovaLicitacao = !mostrarBotaoNovaLicitacao">
-                    NOVA LICITAÇÃO
-                    <img src="/public/img/novaLicitacao.svg" alt="Adicionar"/>
-                </button>
-            </div>
-
             <div v-if="loading">Carregando...</div>
             <div v-else>
-                <div class="licitacao-wrapper">
+                <div class="licitacao-wrapper" :class="{ 'licitacao-wrapper-full': controleTable }">
                     <table class="licitacao-table">
                         <thead>
                             <tr>
@@ -147,8 +119,9 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr v-for="lic in licitacoes" :key="lic.id" @click="carregarLicitacao(lic.id), mostrarBotaoNovaLicitacao
-                            =false">
+                            <tr v-for="lic in licitacoes" :key="lic.id" @click="carregarLicitacao(lic.id); controleButton = false;
+                             linhaSelecionada = (linhaSelecionada === lic.id ? null : lic.id)"
+                             :class="{ 'linha-selecionada': linhaSelecionada === lic.id }">
                                 <td :data-label="'ID LICITAÇÃO'">{{ lic.id }}</td>
                                 <td :data-label="'DATA ABERTURA'">{{ formatarData(lic.data_abertura) }}</td>
                                 <td :data-label="'N° EDITAL'">{{ lic.nu_edital }}</td>
@@ -163,16 +136,39 @@
                 </div>
             </div>
         </div>
-        <div class="licitacao-pagination">
-            <button @click="anteriorPagina" :disabled="resposta.current_page === 1">‹</button>
-            <button v-for="page in paginasVisiveis" :key="page" :class="{ ativo: page === resposta.current_page }"
-                @click="page !== '...' && carregarLicitacoes(page)" :disabled="page === '...'">
-                {{ page }}
-            </button>
-            <button @click="proximaPagina" :disabled="resposta.current_page === resposta.last_page">›</button>
-            <select v-model="itensPorPagina" @change="carregarLicitacoes(1)">
-                <option v-for="n in [5, 10, 25, 50, 100]" :key="n" :value="n">{{ n }}</option>
-            </select>
+        <div class="licitacao-botton-form">
+            <div class="licitacao-input-filtro">
+                    <input v-model="filtroGlobal" type="text" placeholder="Filtro" />
+                <label>
+                    Início:
+                    <input type="date" v-model="dataInicio" :style="{ color: dataInicio ? '#000' : 'gray' }">
+                </label>
+                <label>
+                    Fim:
+                    <input type="date" v-model="dataFim" :style="{ color: dataFim ? '#000' : 'gray' }">
+                </label>
+                <button class="licitacao-button" @click="aplicarTodosOsFiltros">
+                    FILTRAR
+                </button>
+            </div>
+
+            <div class="licitacao-pagination">
+                <button @click="anteriorPagina" :disabled="resposta.current_page === 1">‹</button>
+                <label class="licitacao-label-paginate"> {{resposta.current_page}} </label>
+                <label> de </label>
+                <label> {{resposta.last_page}} </label>
+                <button @click="proximaPagina" :disabled="resposta.current_page === resposta.last_page">›</button>
+                <label>  Total de registros encontrados: </label>
+                <label class="licitacao-label-paginate"> {{resposta.total}} </label>
+                <select v-if=controleTable v-model="itensPorPagina" @change="carregarLicitacoes(1)">
+                    <option v-for="n in [5, 10, 25, 50, 100]" :key="n" :value="n">{{ n }}</option>
+                </select>
+            </div>
+            <div>
+                <button class="licitacao-botton-button" @click="controleTable = !controleTable">
+                    {{ controleTable === true ? 'VOLTAR' : 'VISUALIZAR TABELA'}}
+                </button>
+            </div>
         </div>
     </div>
 </template>
@@ -180,34 +176,38 @@
 
 
 <script setup>
-import { ref, onMounted, computed } from 'vue'
+import { ref, onMounted, computed, watch } from 'vue'
 import axios from 'axios'
 import Multiselect from 'vue-multiselect'
 import 'vue-multiselect/dist/vue-multiselect.min.css';
 import Swal from 'sweetalert2'
 
-const mostrarFiltroPeriodo = ref(false)
-const mostrarBotaoNovaLicitacao = ref(true)
+const controleTable = ref(false)
+const controleButton = ref(false)
 const loading = ref(true)
 const loadingLicitacao = ref(true)
 const ordemCrescente = ref(true)
 
-const itensPorPagina = ref(10)
+watch(controleTable, (ativo) => {
+  itensPorPagina.value = ativo ? 50 : 12
+  carregarLicitacoes(1)
+})
+
+const itensPorPagina = ref(12)
 const dataInicio = ref('')
 const dataFim = ref('')
 const campoOrdenacao = ref('')
 const filtroGlobal = ref('')
+const linhaSelecionada = ref(null)
 
-const id = ref(0);
+const id = ref(0)
 const edital = ref('')
 const modalidade = ref('')
 const licitador = ref('')
 const cnpj = ref('')
-const erroCNPJ = ref('');
 const prioridade = ref('')
 const fase = ref('')
 const data = ref('')
-const erroData = ref('')
 const objeto = ref('')
 const created_at = ref('')
 const updated_at = ref('')
@@ -223,6 +223,7 @@ const resposta = ref({
   current_page: 1,
   last_page: 1,
 })
+
 
 const paginasVisiveis = computed(() => {
   const total = resposta.value.last_page
@@ -298,8 +299,10 @@ async function carregarLicitacoes(pagina = 1) {
         prioridades.value = prioridade.data.prioridade
 
         const response = await axios.get(`/api/licitacoes?${params.toString()}`)
+
         resposta.value = response.data.licitacoes
         licitacoes.value = resposta.value.data
+
     } catch (error) {
         mostrarErro(error, 'atualizar licitação')
     } finally {
@@ -351,16 +354,20 @@ async function carregarLicitacao(id_licitacao) {
     }
 }
 
-async function modificarLicitacao(id_licitacao) {
+async function modificarLicitacao() {
+    if (!validarCNPJ()) return;
+    if (!validarData()) return;
+
     try {
-        if (id_licitacao === 0) {
+        if (id.value === 0) {
             await criarLicitacao()
         } else {
-            await atualizarLicitacao(id_licitacao)
+            await carregarNovaLicitacao()
         }
-    } catch (error) {
+        } catch (error) {
         mostrarErro(error, 'atualizar licitação')
-    }
+        }
+
 }
 
 async function criarLicitacao() {
@@ -504,28 +511,37 @@ function mascaraEdital(e) {
 }
 
 function formatarDataIso(dataBR) {
-  const [dia, mes, ano] = dataBR.split('/')
-  return `${ano}-${mes.padStart(2, '0')}-${dia.padStart(2, '0')}`
+    if (data.value === '') {
+        return ''
+    }
+    else{
+        const [dia, mes, ano] = dataBR.split('/')
+        return `${ano}-${mes.padStart(2, '0')}-${dia.padStart(2, '0')}`
+    }
 }
 
 function validarData() {
   const partes = data.value.split('/')
-  if (partes.length !== 3) {
-    erroData.value = 'Formato inválido (use dd/mm/aaaa)'
-    return
-  }
-  const [dia, mes, ano] = partes.map(Number)
-  const dataObj = new Date(ano, mes - 1, dia)
-  const dataValida =
-    dataObj.getFullYear() === ano &&
-    dataObj.getMonth() === mes - 1 &&
-    dataObj.getDate() === dia
-
-  if (!dataValida) {
-    erroData.value = 'Data inválida'
+  if (data.value === '') {
+    return true
   } else {
-    erroData.value = ''
-  }
+        if (partes.length !== 3) {
+            Swal.fire('Erro', 'Formato inválido (use dd/mm/aaaa)', 'error')
+        }
+        const [dia, mes, ano] = partes.map(Number)
+        const dataObj = new Date(ano, mes - 1, dia)
+        const dataValida =
+            dataObj.getFullYear() === ano &&
+            dataObj.getMonth() === mes - 1 &&
+            dataObj.getDate() === dia
+
+        if (!dataValida) {
+            Swal.fire('Erro', 'Data inválida', 'error')
+            return false
+        } else {
+            return true
+        }
+    }
 }
 
 function formatarData(dataString) {
@@ -546,9 +562,13 @@ function formatarData(dataString) {
 function validarCNPJ() {
   const cnpjLimpo = cnpj.value.replace(/[^\d]+/g, '');
 
-  if (cnpjLimpo.length !== 14 || /^(\d)\1+$/.test(cnpjLimpo)) {
-    erroCNPJ.value = 'CNPJ inválido';
-    return;
+  if (cnpjLimpo.length !== 14) {
+    return true;
+  }
+
+  if (/^(\d)\1+$/.test(cnpjLimpo)) {
+    Swal.fire('Erro', 'CNPJ com todos os dígitos iguais é inválido.', 'error');
+    return false;
   }
 
   let tamanho = 12;
@@ -564,8 +584,8 @@ function validarCNPJ() {
 
   let resultado = soma % 11 < 2 ? 0 : 11 - (soma % 11);
   if (resultado != parseInt(digitos.charAt(0))) {
-    erroCNPJ.value = 'CNPJ inválido';
-    return;
+    Swal.fire('Erro', 'Dígito verificador 1 do CNPJ está incorreto.', 'error');
+    return false;
   }
 
   tamanho = 13;
@@ -580,9 +600,11 @@ function validarCNPJ() {
 
   resultado = soma % 11 < 2 ? 0 : 11 - (soma % 11);
   if (resultado != parseInt(digitos.charAt(1))) {
-    erroCNPJ.value = 'CNPJ inválido';
-  } else {
-    erroCNPJ.value = '';
+    Swal.fire('Erro', 'Dígito verificador 2 do CNPJ está incorreto.', 'error');
+    return false;
   }
+
+  return true;
 }
+
 </script>

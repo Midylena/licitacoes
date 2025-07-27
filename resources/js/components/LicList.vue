@@ -25,7 +25,6 @@
                             FILTRAR
                         </button>
                     </div>
-
                 </div>
                 <button class="liclist-button" @click="editarLicitacao(0)">
                     NOVA LICITAÇÃO
